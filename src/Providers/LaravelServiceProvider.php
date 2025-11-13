@@ -65,6 +65,13 @@ class LaravelServiceProvider extends ServiceProvider {
 
         $vendor_config = require $path;
         $config = $this->app['config']->get($config_key, []);
+        if (is_array($config)) {
+            foreach ($config as $k => $v) {
+                if (array_key_exists($k, $vendor_config) && $v === null) {
+                    $vendor_config[$k] = null;
+                }
+            }
+        }
 
         $this->app['config']->set($config_key, $this->array_merge_recursive_distinct($vendor_config, $config));
 
